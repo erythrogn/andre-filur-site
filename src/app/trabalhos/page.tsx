@@ -8,37 +8,25 @@ import {
   allWorks, 
   worksByCategory, 
   vimeoVideos,
-  seriesNames,
   categoryPDFs,
   type Work 
 } from '@/data/works';
+import { useLanguage } from '@/lib/LanguageContext';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
 // ============================================
-// TIPOS E CONSTANTES ATUALIZADOS
-// ============================================
-type FilterCategory = 'todos' | 'carranqueira' | 'encruzilhada' | 'ori' | 'gravura' | 'mural' | 'pintura' | 'exposicoes' | 'textos';
-
-const FILTROS: { id: FilterCategory; label: string }[] = [
-  { id: 'todos', label: 'Todos' },
-  { id: 'carranqueira', label: 'Carranqueira' },
-  { id: 'encruzilhada', label: 'Encruzilhada' },
-  { id: 'ori', label: 'Ori – Quartinhas' },
-  { id: 'gravura', label: 'Gravura' },
-  { id: 'mural', label: 'Mural' },
-  { id: 'pintura', label: 'Pintura' },
-  { id: 'exposicoes', label: 'Exposições' },
-  { id: 'textos', label: 'Textos e Catálogos' },
-];
-
-// ============================================
 // COMPONENTES AUXILIARES
 // ============================================
 
 function WorkCard({ work }: { work: Work }) {
+  const { t } = useLanguage();
+  
+  // Conversão segura (casting) para evitar bloqueios do TypeScript
+  const categoryKey = `works.${work.category}` as Parameters<typeof t>[0];
+
   return (
     <article className="work-card-anim group relative aspect-[4/5] bg-fundo-principal/5 overflow-hidden rounded-sm drop-shadow-[0_15px_25px_rgba(0,0,0,0.05)]">
       <div className="relative w-full h-full">
@@ -56,7 +44,7 @@ function WorkCard({ work }: { work: Work }) {
           {work.title}
         </h3>
         <p className="font-dm-mono text-[10px] uppercase text-ocre tracking-widest">
-          {seriesNames.pt[work.category as keyof typeof seriesNames.pt] || work.category}
+          {t(categoryKey)}
         </p>
         {work.year && (
           <p className="font-dm-mono text-[9px] text-areia mt-1">
@@ -69,6 +57,8 @@ function WorkCard({ work }: { work: Work }) {
 }
 
 function VideoCard({ video }: { video: { id: string; title: string } }) {
+  const { t } = useLanguage();
+
   return (
     <article className="video-card-anim group flex flex-col gap-4 w-full">
       <div className="relative aspect-video bg-fundo-principal/5 rounded-sm overflow-hidden border border-transparent transition-all duration-700 ease-out group-hover:border-ocre/30 group-hover:shadow-[0_15px_30px_rgba(139,115,85,0.15)]">
@@ -88,30 +78,10 @@ function VideoCard({ video }: { video: { id: string; title: string } }) {
           {video.title}
         </h3>
         <span className="text-[9px] font-dm-mono tracking-widest uppercase text-ocre">
-          Documentação Audiovisual
+          {t('works.audiovisual')}
         </span>
       </div>
     </article>
-  );
-}
-
-function FilterButton({ filtro, isActive, onClick }: { filtro: typeof FILTROS[0]; isActive: boolean; onClick: () => void; }) {
-  return (
-    <button
-      onClick={onClick}
-      aria-pressed={isActive}
-      aria-label={`Filtrar por ${filtro.label}`}
-      className={`
-        font-dm-mono text-sm uppercase tracking-widest
-        transition-all duration-300
-        ${isActive 
-          ? 'text-ocre border-b-2 border-ocre pb-1' 
-          : 'text-fundo-principal/50 hover:text-fundo-principal pb-1'
-        }
-      `}
-    >
-      {filtro.label}
-    </button>
   );
 }
 
@@ -120,7 +90,21 @@ function FilterButton({ filtro, isActive, onClick }: { filtro: typeof FILTROS[0]
 // ============================================
 
 export default function TrabalhosPage() {
-  const [activeFilter, setActiveFilter] = useState<FilterCategory>('todos');
+  const { t } = useLanguage();
+  const [activeFilter, setActiveFilter] = useState<string>('todos');
+
+  // Arrays gerados dinamicamente com as novas traduções
+  const FILTROS = useMemo(() => [
+    { id: 'todos', label: t('works.all') },
+    { id: 'carranqueira', label: t('works.carranqueira') },
+    { id: 'encruzilhada', label: t('works.encruzilhada') },
+    { id: 'ori', label: t('works.ori') },
+    { id: 'gravura', label: t('works.gravura') },
+    { id: 'mural', label: t('works.mural') },
+    { id: 'pintura', label: t('works.pintura') },
+    { id: 'exposicoes', label: t('works.exhibitions') },
+    { id: 'textos', label: t('works.textos') },
+  ], [t]);
 
   const filteredWorks = useMemo(() => {
     if (activeFilter === 'todos') return allWorks;
@@ -131,26 +115,24 @@ export default function TrabalhosPage() {
   const stats = useMemo(() => ({
     total: allWorks.length,
     porCategoria: [
-      { id: 'carranqueira', label: 'Carranqueira', count: worksByCategory.carranqueira?.length || 0 },
-      { id: 'encruzilhada', label: 'Encruzilhada', count: worksByCategory.encruzilhada?.length || 0 },
-      { id: 'ori', label: 'Ori', count: worksByCategory.ori?.length || 0 },
-      { id: 'gravura', label: 'Gravura', count: worksByCategory.gravura?.length || 0 },
-      { id: 'mural', label: 'Mural', count: worksByCategory.mural?.length || 0 },
-      { id: 'pintura', label: 'Pintura', count: worksByCategory.pintura?.length || 0 },
-      { id: 'exposicoes', label: 'Exposições', count: worksByCategory.exposicoes?.length || 0 },
-    ]
+      { id: 'carranqueira', key: 'works.carranqueira', count: worksByCategory.carranqueira?.length || 0 },
+      { id: 'encruzilhada', key: 'works.encruzilhada', count: worksByCategory.encruzilhada?.length || 0 },
+      { id: 'ori', key: 'works.ori', count: worksByCategory.ori?.length || 0 },
+      { id: 'gravura', key: 'works.gravura', count: worksByCategory.gravura?.length || 0 },
+      { id: 'mural', key: 'works.mural', count: worksByCategory.mural?.length || 0 },
+      { id: 'pintura', key: 'works.pintura', count: worksByCategory.pintura?.length || 0 },
+      { id: 'exposicoes', key: 'works.exhibitions', count: worksByCategory.exposicoes?.length || 0 },
+    ] as const
   }), []);
 
   useEffect(() => {
     ScrollTrigger.refresh();
     
-    // Animação das Obras
     gsap.fromTo('.work-card-anim', 
       { opacity: 0, y: 30 }, 
       { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out', overwrite: true }
     );
 
-    // Animação dos Vídeos com ScrollTrigger
     gsap.fromTo('.video-card-anim',
       { opacity: 0, y: 40 },
       {
@@ -163,7 +145,6 @@ export default function TrabalhosPage() {
       }
     );
 
-    // Animação dos PDFs
     gsap.fromTo('.pdf-card-anim',
       { opacity: 0, scale: 0.96, y: 20 },
       {
@@ -180,10 +161,10 @@ export default function TrabalhosPage() {
   const renderPDFGrid = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {Object.entries(categoryPDFs).map(([key, url]) => {
-        const labelFormatado = key === 'curriculo' ? 'Currículo Profissional' :
-                               key === 'portfolio' ? 'Portfólio Completo' :
-                               key === 'conceito' ? 'Texto de Conceito' :
-                               `Catálogo Série ${key.charAt(0).toUpperCase() + key.slice(1)}`;
+        const labelFormatado = key === 'curriculo' ? t('works.resume') :
+                               key === 'portfolio' ? t('works.portfolio') :
+                               key === 'conceito' ? t('works.concept') :
+                               `${t('works.catalog')} ${key.charAt(0).toUpperCase() + key.slice(1)}`;
 
         return (
           <a
@@ -194,7 +175,7 @@ export default function TrabalhosPage() {
             className="pdf-card-anim group flex items-center justify-between p-6 bg-fundo-principal/5 rounded-sm border border-fundo-principal/10 hover:border-ocre/30 transition-all duration-300 cursor-pointer"
           >
             <div className="flex flex-col pr-4">
-              <span className="font-dm-mono text-[9px] uppercase tracking-widest text-ocre mb-1">Documento PDF</span>
+              <span className="font-dm-mono text-[9px] uppercase tracking-widest text-ocre mb-1">{t('works.pdf_document')}</span>
               <h3 className="font-cormorant text-xl text-fundo-principal group-hover:text-ocre transition-colors duration-300">
                 {labelFormatado}
               </h3>
@@ -216,26 +197,32 @@ export default function TrabalhosPage() {
         
         {/* Cabeçalho */}
         <header className="mb-16 text-center">
-          <h1 className="font-cormorant text-5xl md:text-6xl mb-4">Trabalhos</h1>
+          <h1 className="font-cormorant text-5xl md:text-6xl mb-4">{t('nav.works')}</h1>
           <p className="font-dm-mono text-xs uppercase tracking-wider text-fundo-principal/60">
-            {stats.total} obras · {vimeoVideos.length} vídeos
+            {stats.total} {t('works.artworks_count')} · {vimeoVideos.length} {t('works.videos_count')}
           </p>
         </header>
 
         {/* Abas de Filtros */}
         <nav className="flex flex-wrap justify-center gap-8 mb-16" aria-label="Filtros de categorias">
           {FILTROS.map((filtro) => (
-            <FilterButton
+            <button
               key={filtro.id}
-              filtro={filtro}
-              isActive={activeFilter === filtro.id}
               onClick={() => setActiveFilter(filtro.id)}
-            />
+              aria-pressed={activeFilter === filtro.id}
+              className={`font-dm-mono text-sm uppercase tracking-widest transition-all duration-300 ${
+                activeFilter === filtro.id 
+                  ? 'text-ocre border-b-2 border-ocre pb-1' 
+                  : 'text-fundo-principal/50 hover:text-fundo-principal pb-1'
+              }`}
+            >
+              {filtro.label}
+            </button>
           ))}
         </nav>
 
         {/* Seção Dinâmica */}
-        <section aria-label={activeFilter === 'textos' ? "Material descritivo em PDF" : "Galeria de obras"} className={activeFilter === 'textos' ? "pdf-section-trigger" : ""}>
+        <section aria-label={activeFilter === 'textos' ? t('works.texts_title') : t('works.all')} className={activeFilter === 'textos' ? "pdf-section-trigger" : ""}>
           {activeFilter === 'textos' ? (
             <div className="mb-32">
               {renderPDFGrid()}
@@ -249,19 +236,19 @@ export default function TrabalhosPage() {
           ) : (
             <div className="text-center py-20">
               <p className="font-dm-mono text-fundo-principal/60 uppercase tracking-wider text-sm">
-                Nenhuma obra encontrada nesta categoria
+                {t('works.not_found')}
               </p>
             </div>
           )}
         </section>
 
-        {/* Seções Globais (Aparecem apenas na aba "Todos") */}
+        {/* Seções Globais */}
         {activeFilter === 'todos' && vimeoVideos.length > 0 && (
           <section className="pt-16 border-t border-fundo-principal/10 mb-32 video-section-trigger" aria-label="Registros em vídeo">
             <header className="mb-12 text-center">
-              <h2 className="font-cormorant text-4xl mb-3 text-ocre">Registros em Vídeo</h2>
+              <h2 className="font-cormorant text-4xl mb-3 text-ocre">{t('works.videos_title')}</h2>
               <p className="font-dm-mono text-[10px] uppercase tracking-widest text-fundo-principal/60">
-                Processo · Exposições · Documentação
+                {t('works.videos_subtitle')}
               </p>
             </header>
 
@@ -276,23 +263,23 @@ export default function TrabalhosPage() {
         {activeFilter === 'todos' && (
           <section className="pt-16 border-t border-fundo-principal/10 pdf-section-trigger" aria-label="Material descritivo em PDF">
             <header className="mb-12 text-center">
-              <h2 className="font-cormorant text-4xl mb-3 text-ocre">Textos Teóricos e Catálogos</h2>
+              <h2 className="font-cormorant text-4xl mb-3 text-ocre">{t('works.texts_title')}</h2>
               <p className="font-dm-mono text-[10px] uppercase tracking-widest text-fundo-principal/60">
-                Publicações Oficiais · Conceito Artístico · Arquivos para Download
+                {t('works.texts_subtitle')}
               </p>
             </header>
             {renderPDFGrid()}
           </section>
         )}
 
-        {/* Rodapé Estatístico */}
+        {/* Rodapé Estatístico Dinâmico */}
         <aside className="mt-20 pt-16 border-t border-fundo-principal/10">
           <div className="flex flex-wrap justify-center gap-8 md:gap-12 text-center">
             {stats.porCategoria.map((categoria) => (
               <div key={categoria.id} className="min-w-[100px]">
                 <p className="font-cormorant text-4xl text-ocre mb-2">{categoria.count}</p>
                 <p className="font-dm-mono text-[9px] uppercase tracking-wider text-fundo-principal/60">
-                  {categoria.label}
+                  {t(categoria.key as Parameters<typeof t>[0])}
                 </p>
               </div>
             ))}

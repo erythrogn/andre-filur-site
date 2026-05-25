@@ -17,10 +17,24 @@
   'works.carranqueira': 'Carranqueira',
   'works.encruzilhada': 'Série Encruzilhada',
   'works.ori': 'Ori – Quartinhas',
-  'works.exhibitions': 'Exposições',
   'works.gravura': 'Gravura',
   'works.mural': 'Mural',
   'works.pintura': 'Pintura',
+  'works.exhibitions': 'Exposições',
+  'works.textos': 'Textos e Catálogos',
+  'works.artworks_count': 'obras',
+  'works.videos_count': 'vídeos',
+  'works.not_found': 'Nenhuma obra encontrada nesta categoria',
+  'works.videos_title': 'Registros em Vídeo',
+  'works.videos_subtitle': 'Processo · Exposições · Documentação',
+  'works.texts_title': 'Textos Teóricos e Catálogos',
+  'works.texts_subtitle': 'Publicações Oficiais · Conceito Artístico · Arquivos para Download',
+  'works.pdf_document': 'Documento PDF',
+  'works.resume': 'Currículo Profissional',
+  'works.portfolio': 'Portfólio Completo',
+  'works.concept': 'Texto de Conceito',
+  'works.catalog': 'Catálogo Série',
+  'works.audiovisual': 'Documentação Audiovisual',
   
   // About
   'about.title': 'Sobre',
@@ -54,4 +68,3 @@
   // Footer
   'footer.rights': 'Todos os direitos reservados',
 } as const;
-

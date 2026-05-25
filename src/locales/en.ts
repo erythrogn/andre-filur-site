@@ -17,10 +17,24 @@
   'works.carranqueira': 'Carranqueira',
   'works.encruzilhada': 'Crossroads Series',
   'works.ori': 'Ori – Quartinhas',
-  'works.exhibitions': 'Exhibitions',
   'works.gravura': 'Printmaking',
   'works.mural': 'Mural',
   'works.pintura': 'Painting',
+  'works.exhibitions': 'Exhibitions',
+  'works.textos': 'Texts and Catalogs',
+  'works.artworks_count': 'artworks',
+  'works.videos_count': 'videos',
+  'works.not_found': 'No artworks found in this category',
+  'works.videos_title': 'Video Records',
+  'works.videos_subtitle': 'Process · Exhibitions · Documentation',
+  'works.texts_title': 'Theoretical Texts and Catalogs',
+  'works.texts_subtitle': 'Official Publications · Artistic Concept · Files for Download',
+  'works.pdf_document': 'PDF Document',
+  'works.resume': 'Professional Resume',
+  'works.portfolio': 'Complete Portfolio',
+  'works.concept': 'Concept Text',
+  'works.catalog': 'Series Catalog',
+  'works.audiovisual': 'Audiovisual Documentation',
   
   // About
   'about.title': 'About',
@@ -54,4 +68,3 @@
   // Footer
   'footer.rights': 'All rights reserved',
 } as const;
-
