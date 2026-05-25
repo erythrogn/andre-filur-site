@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import CurriculoButton from '@/components/ui/CurriculoButton';
@@ -9,23 +9,36 @@ import { useLanguage } from '@/lib/LanguageContext';
 export default function SobrePage() {
   const { t } = useLanguage();
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  
+  // Estado para controlar o áudio do vídeo
+  const [isMuted, setIsMuted] = useState(true);
 
-  // Animação robusta de entrada na montagem do componente
   useEffect(() => {
     gsap.fromTo('.gsap-reveal', 
-      { opacity: 0, y: 40 }, 
-      { opacity: 1, y: 0, duration: 1.2, stagger: 0.15, ease: 'power3.out' }
+      { opacity: 0, y: 30 }, 
+      { opacity: 1, y: 0, duration: 1, stagger: 0.15, ease: 'power3.out' }
     );
   }, []);
+
+  // Função para alternar o áudio usando a API do Vimeo (sem recarregar o iframe)
+  const toggleAudio = () => {
+    const nextMuted = !isMuted;
+    setIsMuted(nextMuted);
+    
+    if (iframeRef.current && iframeRef.current.contentWindow) {
+      iframeRef.current.contentWindow.postMessage(
+        JSON.stringify({ method: 'setVolume', value: nextMuted ? 0 : 1 }),
+        '*'
+      );
+    }
+  };
 
   return (
     <div className="min-h-screen pt-32 pb-20 bg-creme text-fundo-principal overflow-hidden">
       <div className="container-custom">
         <div className="grid md:grid-cols-2 gap-16 lg:gap-24 items-center">
           
-          {/* ========================================== */}
-          {/* COLUNA ESQUERDA - Texto Institucional      */}
-          {/* ========================================== */}
+        
           <div className="space-y-8">
             <h1 className="heading-2 gsap-reveal">
               {t('about.title')}
@@ -35,30 +48,45 @@ export default function SobrePage() {
               {t('about.text')}
             </p>
           </div>
-
-          {/* ========================================== */}
-          {/* COLUNA DIREITA - Composição de Mídia       */}
-          {/* ========================================== */}
           <div className="relative flex flex-col items-end mt-10 md:mt-0">
             
-            {/* Bloco de Composição (Vídeo + Imagem) */}
-            <div className="relative w-full max-w-lg mb-16">
+            <div className="relative w-full max-w-lg mb-16 gsap-reveal">
               
-              {/* 1. Container do Vídeo (Fundo / Direita) */}
-              <div className="relative w-[80%] aspect-[4/5] ml-auto bg-fundo-principal/5 overflow-hidden rounded-sm gsap-reveal shadow-xl">
+              {/* 1. Container do Vídeo */}
+              <div className="relative w-[80%] aspect-[4/5] ml-auto bg-fundo-principal/5 overflow-hidden rounded-sm shadow-xl group">
                 <iframe 
                   ref={iframeRef}
-                  src="https://player.vimeo.com/video/1194435833?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1" 
+                  // URL atualizada para permitir a manipulação de volume via API
+                  src="https://player.vimeo.com/video/1194435833?autoplay=1&loop=1&byline=0&title=0&muted=1&controls=0&api=1" 
                   className="absolute inset-0 w-full h-full object-cover pointer-events-none"
                   frameBorder="0" 
                   allow="autoplay; fullscreen; picture-in-picture" 
                   title="o proposito"
                 ></iframe>
+
+                <button 
+                  onClick={toggleAudio}
+                  className="absolute bottom-6 right-6 z-20 p-4 rounded-full bg-fundo-principal/40 backdrop-blur-md border border-creme/10 text-creme shadow-[0_0_20px_rgba(0,0,0,0.3)] transition-all duration-500 ease-out hover:scale-110 hover:bg-fundo-principal/80"
+                  aria-label="Alternar Audio"
+                >
+                  {isMuted ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                      <line x1="23" y1="9" x2="17" y2="15"></line>
+                      <line x1="17" y1="9" x2="23" y2="15"></line>
+                    </svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                      <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                    </svg>
+                  )}
+                </button>
               </div>
 
-              {/* 2. Container da Imagem (Frente / Esquerda / Sobreposta) */}
-              {/* A borda 'border-creme' cria um efeito de recorte visual muito elegante */}
-              <div className="absolute -bottom-10 left-0 w-[55%] aspect-square border-[10px] border-creme bg-fundo-secundario overflow-hidden rounded-sm shadow-2xl gsap-reveal z-10">
+              {/* 2. Container da Imagem */}
+             <div className="absolute -bottom-10 left-0 w-[55%] aspect-square border-[10px] border-creme bg-fundo-secundario overflow-hidden rounded-sm shadow-2xl gsap-reveal z-10">
                 <Image 
                   src="/images/Andre_perfil.jpeg" 
                   alt="Retrato de André Filúr" 
@@ -72,7 +100,7 @@ export default function SobrePage() {
 
             {/* Botão do Currículo */}
             <div className="gsap-reveal w-full max-w-lg flex justify-end pt-8 border-t border-fundo-principal/10">
-              <div className="w-[80%]"> {/* Alinhado geometricamente com o vídeo */}
+              <div className="w-[80%]"> 
                 <CurriculoButton />
               </div>
             </div>
