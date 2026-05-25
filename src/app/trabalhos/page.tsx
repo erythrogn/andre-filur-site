@@ -37,18 +37,17 @@ const FILTROS: { id: FilterCategory; label: string }[] = [
 
 function WorkCard({ work }: { work: Work }) {
   return (
-    <article className="work-card-anim group relative aspect-[4/5] bg-fundo-principal/5 overflow-hidden rounded-sm">
+    <article className="work-card-anim group relative aspect-[4/5] bg-fundo-principal/5 overflow-hidden rounded-sm drop-shadow-[0_15px_25px_rgba(0,0,0,0.05)]">
       <div className="relative w-full h-full">
         <Image
           src={work.image}
           alt={work.title}
           fill
-          className="object-cover transition-transform duration-700 group-hover:scale-105"
+          className="object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
       </div>
       
-      {/* O overlay de hover permanece escuro para manter o forte apelo visual e legibilidade dos textos */}
       <div className="absolute inset-0 bg-gradient-to-t from-fundo-principal via-fundo-principal/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6">
         <h3 className="font-cormorant text-2xl italic text-creme mb-2">
           {work.title}
@@ -66,19 +65,31 @@ function WorkCard({ work }: { work: Work }) {
   );
 }
 
+// Novo Design do VideoCard com Plaqueta de Museu e Hover
 function VideoCard({ video }: { video: { id: string; title: string } }) {
   return (
-    <div className="relative aspect-video bg-fundo-principal/5 rounded-sm overflow-hidden">
-      <iframe
-        className="absolute inset-0 w-full h-full"
-        src={`https://player.vimeo.com/video/${video.id}?title=0&byline=0&portrait=0&color=8B7355`}
-        frameBorder="0"
-        allow="autoplay; fullscreen; picture-in-picture"
-        allowFullScreen
-        title={video.title}
-        loading="lazy"
-      />
-    </div>
+    <article className="video-card-anim group flex flex-col gap-4 w-full">
+      <div className="relative aspect-video bg-fundo-principal/5 rounded-sm overflow-hidden border border-transparent transition-all duration-700 ease-out group-hover:border-ocre/30 group-hover:shadow-[0_15px_30px_rgba(139,115,85,0.15)]">
+        <iframe
+          className="absolute inset-0 w-full h-full transition-transform duration-1000 ease-out group-hover:scale-[1.02]"
+          src={`https://player.vimeo.com/video/${video.id}?title=0&byline=0&portrait=0&color=8B7355`}
+          frameBorder="0"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowFullScreen
+          title={video.title}
+          loading="lazy"
+        />
+      </div>
+      
+      <div className="flex flex-col gap-1 px-2 transition-opacity duration-700 opacity-60 group-hover:opacity-100 cursor-default">
+        <h3 className="text-xs font-dm-mono font-medium tracking-widest uppercase text-fundo-principal">
+          {video.title}
+        </h3>
+        <span className="text-[9px] font-dm-mono tracking-widest uppercase text-ocre">
+          Documentação Audiovisual
+        </span>
+      </div>
+    </article>
   );
 }
 
@@ -128,11 +139,26 @@ export default function TrabalhosPage() {
   useEffect(() => {
     ScrollTrigger.refresh();
     
+    // Animação das Obras
     gsap.fromTo('.work-card-anim', 
       { opacity: 0, y: 30 }, 
       { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out', overwrite: true }
     );
 
+    // Animação dos Vídeos com ScrollTrigger
+    gsap.fromTo('.video-card-anim',
+      { opacity: 0, y: 40 },
+      {
+        opacity: 1, y: 0, duration: 1, stagger: 0.1, ease: 'power3.out', overwrite: true,
+        scrollTrigger: {
+          trigger: '.video-section-trigger',
+          start: 'top 85%',
+          toggleActions: 'play none none none'
+        }
+      }
+    );
+
+    // Animação dos PDFs
     gsap.fromTo('.pdf-card-anim',
       { opacity: 0, scale: 0.96, y: 20 },
       {
@@ -226,7 +252,7 @@ export default function TrabalhosPage() {
 
         {/* Seções Globais (Aparecem apenas na aba "Todos") */}
         {activeFilter === 'todos' && vimeoVideos.length > 0 && (
-          <section className="pt-16 border-t border-fundo-principal/10 mb-32" aria-label="Registros em vídeo">
+          <section className="pt-16 border-t border-fundo-principal/10 mb-32 video-section-trigger" aria-label="Registros em vídeo">
             <header className="mb-12 text-center">
               <h2 className="font-cormorant text-4xl mb-3 text-ocre">Registros em Vídeo</h2>
               <p className="font-dm-mono text-[10px] uppercase tracking-widest text-fundo-principal/60">
@@ -234,7 +260,7 @@ export default function TrabalhosPage() {
               </p>
             </header>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
               {vimeoVideos.map((video) => (
                 <VideoCard key={video.id} video={video} />
               ))}
