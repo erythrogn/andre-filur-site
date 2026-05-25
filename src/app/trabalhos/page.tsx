@@ -20,7 +20,7 @@ if (typeof window !== 'undefined') {
 // ============================================
 // TIPOS E CONSTANTES
 // ============================================
-type FilterCategory = 'todos' | 'carranqueira' | 'encruzilhada' | 'ori' | 'exposicoes';
+type FilterCategory = 'todos' | 'carranqueira' | 'encruzilhada' | 'ori' | 'exposicoes' | 'textos';
 
 const FILTROS: { id: FilterCategory; label: string }[] = [
   { id: 'todos', label: 'Todos' },
@@ -28,6 +28,7 @@ const FILTROS: { id: FilterCategory; label: string }[] = [
   { id: 'encruzilhada', label: 'Encruzilhada' },
   { id: 'ori', label: 'Ori – Quartinhas' },
   { id: 'exposicoes', label: 'Exposições' },
+  { id: 'textos', label: 'Textos Teóricos e Catálogos' },
 ];
 
 // ============================================
@@ -52,7 +53,7 @@ function WorkCard({ work }: { work: Work }) {
           {work.title}
         </h3>
         <p className="font-dm-mono text-[10px] uppercase text-ocre tracking-widest">
-          {seriesNames.pt[work.category]}
+          {seriesNames.pt[work.category as keyof typeof seriesNames.pt] || work.category}
         </p>
         {work.year && (
           <p className="font-dm-mono text-[9px] text-areia mt-1">
@@ -107,32 +108,37 @@ function FilterButton({ filtro, isActive, onClick }: { filtro: typeof FILTROS[0]
 export default function TrabalhosPage() {
   const [activeFilter, setActiveFilter] = useState<FilterCategory>('todos');
 
+  // Lógica de filtro inteligente
   const filteredWorks = useMemo(() => {
-    if (activeFilter === 'todos') {
-      return allWorks;
-    }
+    if (activeFilter === 'todos') return allWorks;
+    if (activeFilter === 'textos') return []; // Aba de textos não carrega obras
     return worksByCategory[activeFilter as keyof typeof worksByCategory] || [];
   }, [activeFilter]);
 
+  // Estatísticas do rodapé
+  const stats = useMemo(() => ({
+    total: allWorks.length,
+    porCategoria: {
+      carranqueira: worksByCategory.carranqueira?.length || 0,
+      encruzilhada: worksByCategory.encruzilhada?.length || 0,
+      ori: worksByCategory.ori?.length || 0,
+      exposicoes: worksByCategory.exposicoes?.length || 0,
+    }
+  }), []);
+
+  // Motor de animações GSAP disparado a cada troca de aba
   useEffect(() => {
     ScrollTrigger.refresh();
     
-    // Animação das Obras visíveis
     gsap.fromTo('.work-card-anim', 
       { opacity: 0, y: 30 }, 
       { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out', overwrite: true }
     );
 
-    // Animação síncrona e robusta para os blocos de PDF
     gsap.fromTo('.pdf-card-anim',
       { opacity: 0, scale: 0.96, y: 20 },
       {
-        opacity: 1,
-        scale: 1,
-        y: 0,
-        duration: 0.7,
-        stagger: 0.08,
-        ease: 'back.out(1.1)',
+        opacity: 1, scale: 1, y: 0, duration: 0.7, stagger: 0.08, ease: 'back.out(1.1)', overwrite: true,
         scrollTrigger: {
           trigger: '.pdf-section-trigger',
           start: 'top 85%',
@@ -140,17 +146,41 @@ export default function TrabalhosPage() {
         }
       }
     );
-  }, [filteredWorks]);
+  }, [activeFilter, filteredWorks]);
 
-  const stats = useMemo(() => ({
-    total: allWorks.length,
-    porCategoria: {
-      carranqueira: worksByCategory.carranqueira.length,
-      encruzilhada: worksByCategory.encruzilhada.length,
-      ori: worksByCategory.ori.length,
-      exposicoes: worksByCategory.exposicoes.length,
-    }
-  }), []);
+  // Módulo isolado de renderização de PDFs
+  const renderPDFGrid = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {Object.entries(categoryPDFs).map(([key, url]) => {
+        const labelFormatado = key === 'curriculo' ? 'Currículo Profissional' :
+                               key === 'portfolio' ? 'Portfólio Completo' :
+                               key === 'conceito' ? 'Texto de Conceito' :
+                               `Catálogo Série ${key.charAt(0).toUpperCase() + key.slice(1)}`;
+
+        return (
+          <a
+            key={key}
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="pdf-card-anim group flex items-center justify-between p-6 bg-fundo-secundario rounded-sm border border-creme/5 hover:border-ocre/30 transition-all duration-300 cursor-pointer"
+          >
+            <div className="flex flex-col pr-4">
+              <span className="font-dm-mono text-[9px] uppercase tracking-widest text-ocre mb-1">Documento PDF</span>
+              <h3 className="font-cormorant text-xl text-creme group-hover:text-ocre transition-colors duration-300">
+                {labelFormatado}
+              </h3>
+            </div>
+            <div className="p-3 bg-fundo-principal/30 rounded-sm group-hover:bg-ocre/10 transition-all duration-300 flex-shrink-0">
+              <svg className="w-5 h-5 text-areia group-hover:text-ocre transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  );
 
   return (
     <main className="min-h-screen pt-32 pb-20 bg-fundo-principal text-creme">
@@ -164,7 +194,7 @@ export default function TrabalhosPage() {
           </p>
         </header>
 
-        {/* Filtros */}
+        {/* Abas de Filtros */}
         <nav className="flex flex-wrap justify-center gap-8 mb-16" aria-label="Filtros de categorias">
           {FILTROS.map((filtro) => (
             <FilterButton
@@ -176,9 +206,15 @@ export default function TrabalhosPage() {
           ))}
         </nav>
 
-        {/* Galeria de Obras */}
-        <section aria-label="Galeria de obras">
-          {filteredWorks.length > 0 ? (
+        {/* ============================================ */}
+        {/* SEÇÃO DINÂMICA: OBRAS OU PDFs (Substituição Inteligente) */}
+        {/* ============================================ */}
+        <section aria-label={activeFilter === 'textos' ? "Material descritivo em PDF" : "Galeria de obras"} className={activeFilter === 'textos' ? "pdf-section-trigger" : ""}>
+          {activeFilter === 'textos' ? (
+            <div className="mb-32">
+              {renderPDFGrid()}
+            </div>
+          ) : filteredWorks.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-32">
               {filteredWorks.map((work) => (
                 <WorkCard key={work.id} work={work} />
@@ -193,65 +229,45 @@ export default function TrabalhosPage() {
           )}
         </section>
 
+        {/* ============================================ */}
+        {/* SEÇÕES GLOBAIS (Aparecem apenas na aba "Todos") */}
+        {/* ============================================ */}
+        
         {/* Registros em Vídeo */}
-        <section className="pt-16 border-t border-creme/10 mb-32" aria-label="Registros em vídeo">
-          <header className="mb-12 text-center">
-            <h2 className="font-cormorant text-4xl mb-3 text-ocre">Registros em Vídeo</h2>
-            <p className="font-dm-mono text-[10px] uppercase tracking-widest text-areia">
-              Processo · Exposições · Documentação
-            </p>
-          </header>
+        {activeFilter === 'todos' && vimeoVideos.length > 0 && (
+          <section className="pt-16 border-t border-creme/10 mb-32" aria-label="Registros em vídeo">
+            <header className="mb-12 text-center">
+              <h2 className="font-cormorant text-4xl mb-3 text-ocre">Registros em Vídeo</h2>
+              <p className="font-dm-mono text-[10px] uppercase tracking-widest text-areia">
+                Processo · Exposições · Documentação
+              </p>
+            </header>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {vimeoVideos.map((video) => (
-              <VideoCard key={video.id} video={video} />
-            ))}
-          </div>
-        </section>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {vimeoVideos.map((video) => (
+                <VideoCard key={video.id} video={video} />
+              ))}
+            </div>
+          </section>
+        )}
 
-        {/* Seção Dinâmica de PDFs / Catálogos */}
-        <section className="pt-16 border-t border-creme/10 pdf-section-trigger" aria-label="Material descritivo em PDF">
-          <header className="mb-12 text-center">
-            <h2 className="font-cormorant text-4xl mb-3 text-ocre">Textos Teóricos e Catálogos</h2>
-            <p className="font-dm-mono text-[10px] uppercase tracking-widest text-areia">
-              Publicações Oficiais · Conceito Artístico · Arquivos para Download
-            </p>
-          </header>
+        {/* Textos Teóricos (Rodapé) */}
+        {activeFilter === 'todos' && (
+          <section className="pt-16 border-t border-creme/10 pdf-section-trigger" aria-label="Material descritivo em PDF">
+            <header className="mb-12 text-center">
+              <h2 className="font-cormorant text-4xl mb-3 text-ocre">Textos Teóricos e Catálogos</h2>
+              <p className="font-dm-mono text-[10px] uppercase tracking-widest text-areia">
+                Publicações Oficiais · Conceito Artístico · Arquivos para Download
+              </p>
+            </header>
+            {renderPDFGrid()}
+          </section>
+        )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Object.entries(categoryPDFs).map(([key, url]) => {
-              const labelFormatado = key === 'curriculo' ? 'Currículo Profissional' :
-                                     key === 'portfolio' ? 'Portfólio Completo' :
-                                     key === 'conceito' ? 'Texto de Conceito' :
-                                     `Catálogo Série ${key.charAt(0).toUpperCase() + key.slice(1)}`;
-
-              return (
-                <a
-                  key={key}
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="pdf-card-anim group flex items-center justify-between p-6 bg-fundo-secundario rounded-sm border border-creme/5 hover:border-ocre/30 transition-all duration-300 cursor-pointer"
-                >
-                  <div className="flex flex-col pr-4">
-                    <span className="font-dm-mono text-[9px] uppercase tracking-widest text-ocre mb-1">Documento PDF</span>
-                    <h3 className="font-cormorant text-xl text-creme group-hover:text-ocre transition-colors duration-300">
-                      {labelFormatado}
-                    </h3>
-                  </div>
-                  <div className="p-3 bg-fundo-principal/30 rounded-sm group-hover:bg-ocre/10 transition-all duration-300 flex-shrink-0">
-                    <svg className="w-5 h-5 text-areia group-hover:text-ocre transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                    </svg>
-                  </div>
-                </a>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* Rodapé de Estatísticas */}
-        <aside className="mt-32 pt-16 border-t border-creme/10">
+        {/* ============================================ */}
+        {/* RODAPÉ ESTATÍSTICO */}
+        {/* ============================================ */}
+        <aside className="mt-20 pt-16 border-t border-creme/10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
               <p className="font-cormorant text-4xl text-ocre mb-2">{stats.porCategoria.carranqueira}</p>
