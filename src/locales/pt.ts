@@ -18,6 +18,9 @@
   'works.encruzilhada': 'Série Encruzilhada',
   'works.ori': 'Ori – Quartinhas',
   'works.exhibitions': 'Exposições',
+  'works.gravura': 'Gravura',
+  'works.mural': 'Mural',
+  'works.pintura': 'Pintura',
   
   // About
   'about.title': 'Sobre',

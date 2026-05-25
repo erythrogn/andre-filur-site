@@ -18,6 +18,9 @@
   'works.encruzilhada': 'Crossroads Series',
   'works.ori': 'Ori – Quartinhas',
   'works.exhibitions': 'Exhibitions',
+  'works.gravura': 'Printmaking',
+  'works.mural': 'Mural',
+  'works.pintura': 'Painting',
   
   // About
   'about.title': 'About',
