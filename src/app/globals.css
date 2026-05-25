@@ -1,0 +1,72 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-creme text-fundo-principal font-dm-mono;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-cormorant font-light;
+  }
+}
+
+@layer components {
+  .container-custom {
+    @apply max-w-7xl mx-auto px-6 lg:px-12;
+  }
+  
+  .heading-1 {
+    @apply font-cormorant font-light text-4xl md:text-5xl lg:text-6xl text-fundo-principal tracking-wide;
+  }
+  
+  .heading-2 {
+    @apply font-cormorant font-light text-3xl md:text-4xl text-fundo-principal tracking-wide;
+  }
+  
+  .heading-3 {
+    @apply font-cormorant font-light text-2xl md:text-3xl text-fundo-principal;
+  }
+  
+  .body-text {
+    @apply font-dm-mono text-sm md:text-base text-fundo-principal leading-relaxed;
+  }
+  
+  .label-text {
+    @apply font-dm-mono text-xs md:text-sm text-fundo-principal opacity-70 tracking-wider uppercase;
+  }
+  
+  .transition-slow {
+    @apply transition-all duration-500 ease-out;
+  }
+  
+  .hover-fade {
+    @apply transition-slow hover:opacity-80;
+  }
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar invertida */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F5F1EA; /* creme */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D4C9B0; /* areia */
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8B7355; /* ocre */
+}
