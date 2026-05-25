@@ -125,25 +125,3 @@ Após executar `npm run dev`, você deve ver:
 3. Depois de instalar Node.js, repita os passos acima.
 
 ## Estrutura esperada do projeto
-
-```
-andre-filur-site/
-├── node_modules/       (criada após npm install)
-├── public/
-│   └── images/
-├── src/
-│   ├── app/
-│   ├── components/
-│   ├── data/
-│   └── lib/
-├── .eslintrc.json
-├── .gitignore
-├── next.config.js
-├── package.json        ← Este arquivo DEVE ter os scripts!
-├── postcss.config.js
-├── tailwind.config.js
-├── tsconfig.json
-├── README.md
-├── CUSTOMIZACAO.md
-└── LICENSE
-```
