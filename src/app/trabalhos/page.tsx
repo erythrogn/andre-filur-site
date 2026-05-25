@@ -1,7 +1,9 @@
 ﻿'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { 
   allWorks, 
   worksByCategory, 
@@ -10,12 +12,16 @@ import {
   type Work 
 } from '@/data/works';
 
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
 // ============================================
 // TIPOS E CONSTANTES
 // ============================================
-type Category = 'todos' | 'carranqueira' | 'encruzilhada' | 'ori' | 'exposicoes';
+type FilterCategory = 'todos' | 'carranqueira' | 'encruzilhada' | 'ori' | 'exposicoes';
 
-const FILTROS: { id: Category; label: string }[] = [
+const FILTROS: { id: FilterCategory; label: string }[] = [
   { id: 'todos', label: 'Todos' },
   { id: 'carranqueira', label: 'Carranqueira' },
   { id: 'encruzilhada', label: 'Encruzilhada' },
@@ -27,11 +33,9 @@ const FILTROS: { id: Category; label: string }[] = [
 // COMPONENTES AUXILIARES
 // ============================================
 
-/** Componente de Card de Obra */
 function WorkCard({ work }: { work: Work }) {
   return (
-    <article className="group relative aspect-[4/5] bg-fundo-secundario overflow-hidden rounded-sm">
-      {/* Imagem */}
+    <article className="work-card-anim group relative aspect-[4/5] bg-fundo-secundario overflow-hidden rounded-sm">
       <div className="relative w-full h-full">
         <Image
           src={work.image}
@@ -42,7 +46,6 @@ function WorkCard({ work }: { work: Work }) {
         />
       </div>
       
-      {/* Hover Overlay com Informações */}
       <div className="absolute inset-0 bg-gradient-to-t from-fundo-principal via-fundo-principal/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6">
         <h3 className="font-cormorant text-2xl italic text-creme mb-2">
           {work.title}
@@ -60,8 +63,7 @@ function WorkCard({ work }: { work: Work }) {
   );
 }
 
-/** Componente de Card de Vídeo */
-function VideoCard({ video, index }: { video: { id: string; title: string }; index: number }) {
+function VideoCard({ video }: { video: { id: string; title: string } }) {
   return (
     <div className="relative aspect-video bg-fundo-secundario rounded-sm overflow-hidden">
       <iframe
@@ -77,16 +79,7 @@ function VideoCard({ video, index }: { video: { id: string; title: string }; ind
   );
 }
 
-/** Componente de Botão de Filtro */
-function FilterButton({ 
-  filtro, 
-  isActive, 
-  onClick 
-}: { 
-  filtro: typeof FILTROS[0]; 
-  isActive: boolean; 
-  onClick: () => void;
-}) {
+function FilterButton({ filtro, isActive, onClick }: { filtro: typeof FILTROS[0]; isActive: boolean; onClick: () => void; }) {
   return (
     <button
       onClick={onClick}
@@ -111,17 +104,23 @@ function FilterButton({
 // ============================================
 
 export default function TrabalhosPage() {
-  const [activeFilter, setActiveFilter] = useState<Category>('todos');
+  const [activeFilter, setActiveFilter] = useState<FilterCategory>('todos');
 
-  // Filtrar obras com memoização
   const filteredWorks = useMemo(() => {
     if (activeFilter === 'todos') {
       return allWorks;
     }
-    return worksByCategory[activeFilter] || [];
+    return worksByCategory[activeFilter as keyof typeof worksByCategory] || [];
   }, [activeFilter]);
 
-  // Estatísticas
+  useEffect(() => {
+    ScrollTrigger.refresh();
+    gsap.fromTo('.work-card-anim', 
+      { opacity: 0, y: 30 }, 
+      { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out', overwrite: true }
+    );
+  }, [filteredWorks]);
+
   const stats = useMemo(() => ({
     total: allWorks.length,
     porCategoria: {
@@ -136,25 +135,14 @@ export default function TrabalhosPage() {
     <main className="min-h-screen pt-32 pb-20 bg-fundo-principal text-creme">
       <div className="container mx-auto px-4 max-w-7xl">
         
-        {/* ============================================ */}
-        {/* CABEÇALHO */}
-        {/* ============================================ */}
         <header className="mb-16 text-center">
-          <h1 className="font-cormorant text-5xl md:text-6xl mb-4">
-            Trabalhos
-          </h1>
+          <h1 className="font-cormorant text-5xl md:text-6xl mb-4">Trabalhos</h1>
           <p className="font-dm-mono text-xs uppercase tracking-wider text-areia">
             {stats.total} obras · {vimeoVideos.length} vídeos
           </p>
         </header>
 
-        {/* ============================================ */}
-        {/* FILTROS */}
-        {/* ============================================ */}
-        <nav 
-          className="flex flex-wrap justify-center gap-8 mb-16" 
-          aria-label="Filtros de categorias"
-        >
+        <nav className="flex flex-wrap justify-center gap-8 mb-16" aria-label="Filtros de categorias">
           {FILTROS.map((filtro) => (
             <FilterButton
               key={filtro.id}
@@ -165,9 +153,6 @@ export default function TrabalhosPage() {
           ))}
         </nav>
 
-        {/* ============================================ */}
-        {/* GRID DE OBRAS */}
-        {/* ============================================ */}
         <section aria-label="Galeria de obras">
           {filteredWorks.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-32">
@@ -184,65 +169,38 @@ export default function TrabalhosPage() {
           )}
         </section>
 
-        {/* ============================================ */}
-        {/* SEÇÃO DE VÍDEOS */}
-        {/* ============================================ */}
-        <section 
-          className="pt-16 border-t border-creme/10"
-          aria-label="Registros em vídeo"
-        >
+        <section className="pt-16 border-t border-creme/10" aria-label="Registros em vídeo">
           <header className="mb-12 text-center">
-            <h2 className="font-cormorant text-4xl mb-3 text-ocre">
-              Registros em Vídeo
-            </h2>
+            <h2 className="font-cormorant text-4xl mb-3 text-ocre">Registros em Vídeo</h2>
             <p className="font-dm-mono text-[10px] uppercase tracking-widest text-areia">
               Processo · Exposições · Documentação
             </p>
           </header>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {vimeoVideos.map((video, index) => (
-              <VideoCard key={video.id} video={video} index={index} />
+            {vimeoVideos.map((video) => (
+              <VideoCard key={video.id} video={video} />
             ))}
           </div>
         </section>
 
-        {/* ============================================ */}
-        {/* ESTATÍSTICAS (opcional - pode remover) */}
-        {/* ============================================ */}
         <aside className="mt-20 pt-16 border-t border-creme/10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
-              <p className="font-cormorant text-4xl text-ocre mb-2">
-                {stats.porCategoria.carranqueira}
-              </p>
-              <p className="font-dm-mono text-[9px] uppercase tracking-wider text-areia">
-                Carranqueira
-              </p>
+              <p className="font-cormorant text-4xl text-ocre mb-2">{stats.porCategoria.carranqueira}</p>
+              <p className="font-dm-mono text-[9px] uppercase tracking-wider text-areia">Carranqueira</p>
             </div>
             <div>
-              <p className="font-cormorant text-4xl text-ocre mb-2">
-                {stats.porCategoria.encruzilhada}
-              </p>
-              <p className="font-dm-mono text-[9px] uppercase tracking-wider text-areia">
-                Encruzilhada
-              </p>
+              <p className="font-cormorant text-4xl text-ocre mb-2">{stats.porCategoria.encruzilhada}</p>
+              <p className="font-dm-mono text-[9px] uppercase tracking-wider text-areia">Encruzilhada</p>
             </div>
             <div>
-              <p className="font-cormorant text-4xl text-ocre mb-2">
-                {stats.porCategoria.ori}
-              </p>
-              <p className="font-dm-mono text-[9px] uppercase tracking-wider text-areia">
-                Ori
-              </p>
+              <p className="font-cormorant text-4xl text-ocre mb-2">{stats.porCategoria.ori}</p>
+              <p className="font-dm-mono text-[9px] uppercase tracking-wider text-areia">Ori</p>
             </div>
             <div>
-              <p className="font-cormorant text-4xl text-ocre mb-2">
-                {stats.porCategoria.exposicoes}
-              </p>
-              <p className="font-dm-mono text-[9px] uppercase tracking-wider text-areia">
-                Exposições
-              </p>
+              <p className="font-cormorant text-4xl text-ocre mb-2">{stats.porCategoria.exposicoes}</p>
+              <p className="font-dm-mono text-[9px] uppercase tracking-wider text-areia">Exposições</p>
             </div>
           </div>
         </aside>
