@@ -1,11 +1,12 @@
-'use client'
+'use client';
 
+import { useRef } from 'react';
 import CurriculoButton from '@/components/ui/CurriculoButton';
 import { useLanguage } from '@/lib/LanguageContext';
-import Image from 'next/image';
 
 export default function SobrePage() {
-  const { t } = useLanguage()
+  const { t } = useLanguage();
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   return (
     <div className="min-h-screen pt-32 pb-20">
@@ -23,19 +24,19 @@ export default function SobrePage() {
             </p>
           </div>
 
-          {/* Coluna Direita - Foto e Currículo */}
+          {/* Coluna Direita - Vídeo e Currículo */}
           <div className="space-y-10 flex flex-col">
             
-            {/* Imagem de Perfil com Next/Image */}
-            <div className="relative w-full aspect-[4/5] max-w-md bg-fundo-principal/5 gsap-reveal">
-              <Image 
-                src="/images/Andre_perfil.jpeg" 
-                alt="André Filúr" 
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
-                priority
-              />
+            {/* Container do Vídeo Corrigido */}
+            <div className="relative w-full aspect-[4/5] max-w-md bg-fundo-principal/5 gsap-reveal overflow-hidden rounded-sm">
+              <iframe 
+                ref={iframeRef}
+                src="https://player.vimeo.com/video/1194435833?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1" 
+                className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                frameBorder="0" 
+                allow="autoplay; fullscreen; picture-in-picture" 
+                title="o proposito"
+              ></iframe>
             </div>
 
             {/* Botão do Currículo */}
@@ -48,5 +49,5 @@ export default function SobrePage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
