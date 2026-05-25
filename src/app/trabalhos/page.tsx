@@ -18,17 +18,20 @@ if (typeof window !== 'undefined') {
 }
 
 // ============================================
-// TIPOS E CONSTANTES
+// TIPOS E CONSTANTES ATUALIZADOS
 // ============================================
-type FilterCategory = 'todos' | 'carranqueira' | 'encruzilhada' | 'ori' | 'exposicoes' | 'textos';
+type FilterCategory = 'todos' | 'carranqueira' | 'encruzilhada' | 'ori' | 'gravura' | 'mural' | 'pintura' | 'exposicoes' | 'textos';
 
 const FILTROS: { id: FilterCategory; label: string }[] = [
   { id: 'todos', label: 'Todos' },
   { id: 'carranqueira', label: 'Carranqueira' },
   { id: 'encruzilhada', label: 'Encruzilhada' },
   { id: 'ori', label: 'Ori – Quartinhas' },
+  { id: 'gravura', label: 'Gravura' },
+  { id: 'mural', label: 'Mural' },
+  { id: 'pintura', label: 'Pintura' },
   { id: 'exposicoes', label: 'Exposições' },
-  { id: 'textos', label: 'Textos Teóricos e Catálogos' },
+  { id: 'textos', label: 'Textos e Catálogos' },
 ];
 
 // ============================================
@@ -65,7 +68,6 @@ function WorkCard({ work }: { work: Work }) {
   );
 }
 
-// Novo Design do VideoCard com Plaqueta de Museu e Hover
 function VideoCard({ video }: { video: { id: string; title: string } }) {
   return (
     <article className="video-card-anim group flex flex-col gap-4 w-full">
@@ -128,12 +130,15 @@ export default function TrabalhosPage() {
 
   const stats = useMemo(() => ({
     total: allWorks.length,
-    porCategoria: {
-      carranqueira: worksByCategory.carranqueira?.length || 0,
-      encruzilhada: worksByCategory.encruzilhada?.length || 0,
-      ori: worksByCategory.ori?.length || 0,
-      exposicoes: worksByCategory.exposicoes?.length || 0,
-    }
+    porCategoria: [
+      { id: 'carranqueira', label: 'Carranqueira', count: worksByCategory.carranqueira?.length || 0 },
+      { id: 'encruzilhada', label: 'Encruzilhada', count: worksByCategory.encruzilhada?.length || 0 },
+      { id: 'ori', label: 'Ori', count: worksByCategory.ori?.length || 0 },
+      { id: 'gravura', label: 'Gravura', count: worksByCategory.gravura?.length || 0 },
+      { id: 'mural', label: 'Mural', count: worksByCategory.mural?.length || 0 },
+      { id: 'pintura', label: 'Pintura', count: worksByCategory.pintura?.length || 0 },
+      { id: 'exposicoes', label: 'Exposições', count: worksByCategory.exposicoes?.length || 0 },
+    ]
   }), []);
 
   useEffect(() => {
@@ -282,23 +287,15 @@ export default function TrabalhosPage() {
 
         {/* Rodapé Estatístico */}
         <aside className="mt-20 pt-16 border-t border-fundo-principal/10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <p className="font-cormorant text-4xl text-ocre mb-2">{stats.porCategoria.carranqueira}</p>
-              <p className="font-dm-mono text-[9px] uppercase tracking-wider text-fundo-principal/60">Carranqueira</p>
-            </div>
-            <div>
-              <p className="font-cormorant text-4xl text-ocre mb-2">{stats.porCategoria.encruzilhada}</p>
-              <p className="font-dm-mono text-[9px] uppercase tracking-wider text-fundo-principal/60">Encruzilhada</p>
-            </div>
-            <div>
-              <p className="font-cormorant text-4xl text-ocre mb-2">{stats.porCategoria.ori}</p>
-              <p className="font-dm-mono text-[9px] uppercase tracking-wider text-fundo-principal/60">Ori</p>
-            </div>
-            <div>
-              <p className="font-cormorant text-4xl text-ocre mb-2">{stats.porCategoria.exposicoes}</p>
-              <p className="font-dm-mono text-[9px] uppercase tracking-wider text-fundo-principal/60">Exposições</p>
-            </div>
+          <div className="flex flex-wrap justify-center gap-8 md:gap-12 text-center">
+            {stats.porCategoria.map((categoria) => (
+              <div key={categoria.id} className="min-w-[100px]">
+                <p className="font-cormorant text-4xl text-ocre mb-2">{categoria.count}</p>
+                <p className="font-dm-mono text-[9px] uppercase tracking-wider text-fundo-principal/60">
+                  {categoria.label}
+                </p>
+              </div>
+            ))}
           </div>
         </aside>
 
