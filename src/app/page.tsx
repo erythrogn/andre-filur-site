@@ -1,83 +1,91 @@
-﻿'use client';
+﻿'use client'
 
-import { useRef, useEffect } from 'react';
-import gsap from 'gsap';
-import CurriculoButton from '@/components/ui/CurriculoButton';
-import CurriculoPortifolio from '@/components/ui/PortfolioButton';
-import { useLanguage } from '@/lib/LanguageContext';
+import { useEffect, useRef } from 'react'
+import Image from 'next/image'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useLanguage } from '@/lib/LanguageContext'
 
-export default function SobrePage() {
-  const { t } = useLanguage();
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger)
+}
+
+export default function Home() {
+  const { t } = useLanguage()
+  const textRef = useRef<HTMLDivElement>(null)
+  const imageHeroRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.fromTo('.gsap-reveal', 
-        { opacity: 0, y: 40 }, 
-        { opacity: 1, y: 0, duration: 1.2, stagger: 0.15, ease: 'power3.out' }
-      );
-    });
-    return () => ctx.revert();
-  }, []);
+      // Animação de entrada da Imagem (Fade in + leve escala)
+      gsap.fromTo(
+        imageHeroRef.current,
+        { opacity: 0, scale: 1.05 },
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 1.8,
+          ease: 'power2.out',
+          delay: 0.2
+        }
+      )
+
+      // Animação do Texto ao rolar
+      gsap.fromTo(
+        textRef.current,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1.5,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: textRef.current,
+            start: 'top 85%',
+          },
+        }
+      )
+    })
+    return () => ctx.revert()
+  }, [])
 
   return (
-    <div className="min-h-screen pt-32 pb-20 bg-creme text-fundo-principal overflow-hidden">
-      <div className="container-custom">
-        <div className="grid md:grid-cols-2 gap-16 lg:gap-24 items-center">
-          
-          {/* ========================================== */}
-          {/* COLUNA ESQUERDA - Texto Biográfico         */}
-          {/* ========================================== */}
-          <div className="space-y-10">
-            <h1 className="heading-2 gsap-reveal">
-              {t('about.title')}
-            </h1>
-            
-            <div className="relative pl-6 border-l border-fundo-principal/20 gsap-reveal">
-              <p className="font-cormorant text-xl md:text-2xl text-fundo-principal/90 leading-relaxed whitespace-pre-line">
-                {t('about.text')}
-              </p>
-            </div>
+    <main className="w-full min-h-screen flex flex-col bg-creme">
+      
+      <section className="relative w-full h-[85vh] min-h-[600px] flex items-center justify-center pt-24 pb-12 px-6 bg-creme z-10">
+        
+       
+        <div 
+          ref={imageHeroRef}
+          className="relative w-full max-w-5xl aspect-[16/10] bg-areia p-3 shadow-2xl shadow-fundo-principal/10 rounded-sm overflow-hidden opacity-0"
+        >
+          <div className="relative w-full h-full overflow-hidden rounded-sm">
+            <Image 
+              src="/images/imagehome.jpeg" 
+              alt="André Filúr – O Propósito"
+              fill
+              quality={100}
+              className="object-cover"
+              priority
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+            />
           </div>
-
-          {/* ========================================== */}
-          {/* COLUNA DIREITA - Vídeo e Ações             */}
-          {/* ========================================== */}
-          <div className="relative flex flex-col items-center md:items-end mt-10 md:mt-0">
-            
-            <div className="relative w-full max-w-md mb-10 gsap-reveal">
-              
-              {/* Estética de Galeria (Passe-partout) para o Vídeo */}
-              <div className="relative w-full aspect-[4/5] p-2 bg-fundo-principal/5 rounded-sm shadow-2xl shadow-fundo-principal/10">
-                <div className="relative w-full h-full overflow-hidden rounded-sm">
-                  <iframe 
-                    ref={iframeRef}
-                    // Adicionado 'background=1' para silenciar e ocultar controlos nativos
-                    src="https://player.vimeo.com/video/1194435833?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1" 
-                    className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-                    frameBorder="0" 
-                    allow="autoplay; fullscreen; picture-in-picture" 
-                    title="o proposito"
-                  ></iframe>
-                </div>
-              </div>
-
-            </div>
-
-            {/* Grupo de Botões Alinhados e Harmonizados */}
-            <div className="gsap-reveal w-full max-w-md pt-6 border-t border-fundo-principal/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="w-full -my-4">
-                <CurriculoButton />
-              </div>
-              <div className="w-full -my-4">
-                <CurriculoPortifolio />
-              </div>
-            </div>
-
-          </div>
-          
         </div>
-      </div>
-    </div>
-  );
+
+      </section>
+
+      <section className="relative w-full py-32 px-6 flex justify-center items-center z-20 bg-creme">
+        <div ref={textRef} className="max-w-3xl text-center flex flex-col items-center gap-8 opacity-0">
+          <h1 className="heading-1">André Filúr</h1>
+          <p className="label-text opacity-60">{t('home.subtitle')}</p>
+          <p className="font-cormorant text-2xl md:text-4xl text-fundo-principal italic leading-relaxed mt-4">
+            {t('home.bio')}
+          </p>
+          <p className="label-text mt-8 border-t border-fundo-principal/10 pt-8 w-full max-w-md mx-auto">
+            {t('home.practices')}
+          </p>
+        </div>
+      </section>
+    </main>
+  )
 }
