@@ -64,7 +64,7 @@ export default function SobrePage() {
 
             </div>
 
-            {/* Grupo de Botões Alinhados e Harmonizados */}
+            {/* Grupo de Botões */}
             <div className="gsap-reveal w-full max-w-md pt-6 border-t border-fundo-principal/10 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="w-full -my-4">
                 <CurriculoButton />
