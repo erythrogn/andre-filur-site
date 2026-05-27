@@ -186,8 +186,8 @@ export const worksByCategory = {
 export const seriesNames = {
   pt: {
     carranqueira: 'Carranqueira',
-    encruzilhada: 'Série Encruzilhada',
-    ori: 'Ori – Quartinhas',
+    encruzilhada: 'Encruzilhada',
+    ori: 'Ori',
     exposicoes: 'Exposições',
     gravura: 'Gravura',
     mural: 'Mural',
@@ -195,8 +195,8 @@ export const seriesNames = {
   },
   en: {
     carranqueira: 'Carranqueira',
-    encruzilhada: 'Crossroads Series',
-    ori: 'Ori – Quartinhas',
+    encruzilhada: 'Crossroads',
+    ori: 'Ori',
     exposicoes: 'Exhibitions',
     gravura: 'Engraving',
     mural: 'Mural',
