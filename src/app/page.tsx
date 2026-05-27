@@ -1,6 +1,7 @@
 ﻿'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Player from '@vimeo/player'
@@ -59,15 +60,14 @@ export default function Home() {
       <section className="relative w-full h-screen overflow-hidden bg-fundo-principal flex items-center justify-center group">
         
         <div className="absolute inset-0 w-full h-full pointer-events-none z-0 overflow-hidden opacity-90">
-          <iframe 
-            ref={iframeRef}
-            src="https://player.vimeo.com/video/1194435833?background=1&autoplay=1&loop=1&byline=0&title=0&muted=1" 
-            className="absolute top-1/2 left-1/2 w-[100vw] h-[56.25vw] min-h-[100vh] min-w-[177.77vh] -translate-x-1/2 -translate-y-1/2 object-cover"
-            frameBorder="0" 
-            allow="autoplay; fullscreen; picture-in-picture" 
-            title="o proposito"
-          ></iframe>
-        </div>
+  <Image 
+    src="/images/imagehome.jpeg" 
+    alt="Imagem O Propósito"
+    fill
+    className="object-cover"
+    priority
+  />
+</div>
 
         {/* Botao de Audio com Animacao Robusta */}
         <button 

@@ -1,7 +1,6 @@
 'use client';
 
 import { useRef, useEffect, useState } from 'react';
-import Image from 'next/image';
 import gsap from 'gsap';
 import CurriculoButton from '@/components/ui/CurriculoButton';
 import { useLanguage } from '@/lib/LanguageContext';
@@ -38,7 +37,6 @@ export default function SobrePage() {
       <div className="container-custom">
         <div className="grid md:grid-cols-2 gap-16 lg:gap-24 items-center">
           
-        
           <div className="space-y-8">
             <h1 className="heading-2 gsap-reveal">
               {t('about.title')}
@@ -48,12 +46,13 @@ export default function SobrePage() {
               {t('about.text')}
             </p>
           </div>
-          <div className="relative flex flex-col items-end mt-10 md:mt-0">
+
+          <div className="relative flex flex-col items-center md:items-end mt-10 md:mt-0">
             
-            <div className="relative w-full max-w-lg mb-16 gsap-reveal">
+            <div className="relative w-full max-w-md mb-12 gsap-reveal">
               
-              {/* 1. Container do Vídeo */}
-              <div className="relative w-[80%] aspect-[4/5] ml-auto bg-fundo-principal/5 overflow-hidden rounded-sm shadow-xl group">
+              {/* 1. Container do Vídeo (Ajustado para 100% de largura do max-w-md) */}
+              <div className="relative w-full aspect-[4/5] bg-fundo-principal/5 overflow-hidden rounded-sm shadow-xl group">
                 <iframe 
                   ref={iframeRef}
                   // URL atualizada para permitir a manipulação de volume via API
@@ -85,24 +84,11 @@ export default function SobrePage() {
                 </button>
               </div>
 
-              {/* 2. Container da Imagem */}
-             <div className="absolute -bottom-10 left-0 w-[55%] aspect-square border-[10px] border-creme bg-fundo-secundario overflow-hidden rounded-sm shadow-2xl gsap-reveal z-10">
-                <Image 
-                  src="/images/Andre_perfil.jpeg" 
-                  alt="Retrato de André Filúr" 
-                  fill 
-                  className="object-cover filter grayscale hover:grayscale-0 transition-all duration-700"
-                  sizes="(max-width: 768px) 50vw, 25vw"
-                />
-              </div>
-
             </div>
 
             {/* Botão do Currículo */}
-            <div className="gsap-reveal w-full max-w-lg flex justify-end pt-8 border-t border-fundo-principal/10">
-              <div className="w-[80%]"> 
-                <CurriculoButton />
-              </div>
+            <div className="gsap-reveal w-full max-w-md pt-8 border-t border-fundo-principal/10">
+              <CurriculoButton />
             </div>
 
           </div>
