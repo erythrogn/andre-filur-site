@@ -15,8 +15,8 @@
   // Works
   'works.all': 'Todas',
   'works.carranqueira': 'Carranqueira',
-  'works.encruzilhada': 'Série Encruzilhada',
-  'works.ori': 'Ori – Quartinhas',
+  'works.encruzilhada': 'Encruzilhada',
+  'works.ori': 'Ori',
   'works.gravura': 'Gravura',
   'works.mural': 'Mural',
   'works.pintura': 'Pintura',

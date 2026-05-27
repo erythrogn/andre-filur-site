@@ -15,8 +15,8 @@
   // Works
   'works.all': 'All',
   'works.carranqueira': 'Carranqueira',
-  'works.encruzilhada': 'Crossroads Series',
-  'works.ori': 'Ori – Quartinhas',
+  'works.encruzilhada': 'Crossroads',
+  'works.ori': 'Ori',
   'works.gravura': 'Printmaking',
   'works.mural': 'Mural',
   'works.pintura': 'Painting',
