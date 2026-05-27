@@ -1,34 +1,50 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: #D4C9B0 #F5F1EA;
+  }
+
   body {
-    @apply bg-creme text-fundo-principal font-dm-mono;
+    @apply bg-creme text-fundo-principal font-dm-mono antialiased;
+    overflow-x: hidden;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-cormorant font-light;
+    @apply font-cormorant font-light tracking-wide;
+  }
+
+  ::selection {
+    background-color: #8B7355;
+    color: #F5F1EA;
+  }
+  ::-moz-selection {
+    background-color: #8B7355;
+    color: #F5F1EA;
   }
 }
 
 @layer components {
   .container-custom {
-    @apply max-w-7xl mx-auto px-6 lg:px-12;
+    @apply max-w-7xl mx-auto px-6 lg:px-12 w-full;
   }
   
   .heading-1 {
-    @apply font-cormorant font-light text-4xl md:text-5xl lg:text-6xl text-fundo-principal tracking-wide;
+    @apply font-cormorant font-light text-5xl md:text-6xl lg:text-7xl text-fundo-principal tracking-wide leading-tight;
   }
   
   .heading-2 {
-    @apply font-cormorant font-light text-3xl md:text-4xl text-fundo-principal tracking-wide;
+    @apply font-cormorant font-light text-4xl md:text-5xl text-fundo-principal tracking-wide leading-tight;
   }
   
   .heading-3 {
-    @apply font-cormorant font-light text-2xl md:text-3xl text-fundo-principal;
+    @apply font-cormorant font-light text-2xl md:text-3xl lg:text-4xl text-fundo-principal leading-snug;
   }
   
   .body-text {
@@ -36,11 +52,11 @@
   }
   
   .label-text {
-    @apply font-dm-mono text-xs md:text-sm text-fundo-principal opacity-70 tracking-wider uppercase;
+    @apply font-dm-mono text-xs md:text-sm text-fundo-principal opacity-70 tracking-widest uppercase;
   }
   
   .transition-slow {
-    @apply transition-all duration-500 ease-out;
+    @apply transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)];
   }
   
   .hover-fade {
@@ -48,25 +64,19 @@
   }
 }
 
-/* Smooth scroll */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Custom scrollbar invertida */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #F5F1EA; /* creme */
+  background: #F5F1EA;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #D4C9B0; /* areia */
-  border-radius: 4px;
+  background: #D4C9B0;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #8B7355; /* ocre */
+  background: #8B7355;
 }
