@@ -40,7 +40,7 @@ export const categoryPDFs: Record<string, string> = {
 export const categories: CategoryData[] = [
   { name: 'Carranqueira', slug: 'carranqueira', pdf: categoryPDFs.carranqueira },
   { name: 'Encruzilhada', slug: 'encruzilhada', pdf: categoryPDFs.encruzilhada },
-  { name: 'Ori – Quartinhas', slug: 'ori', pdf: categoryPDFs.ori },
+  { name: 'Ori', slug: 'ori', pdf: categoryPDFs.ori },
   { name: 'Exposições', slug: 'exposicoes' },
   { name: 'Gravura', slug: 'gravura' },
   { name: 'Mural', slug: 'mural' },
@@ -111,10 +111,6 @@ export const muralWorks: Work[] = [
   { id: 'mur-002', title: 'Mural 02', category: 'mural', image: '/Obras/Mural/Andre Filúr_Mural_02.jpg', year: '2024' },
   { id: 'mur-003', title: 'Mural 03', category: 'mural', image: '/Obras/Mural/Andre Filúr_Mural_03.jpg', year: '2024' }
 ];
-
-// ============================================
-// PINTURA
-// ============================================
 export const pinturaWorks: Work[] = [
   { id: 'pint-001', title: 'Obra 01', category: 'pintura', image: '/Obras/Pintura/FOTOS QUADROS/Andre Filúr_Obra_01.jpg', year: '2024' },
   { id: 'pint-002', title: 'Obras 02', category: 'pintura', image: '/Obras/Pintura/FOTOS QUADROS/Andre Filúr_Obras_02.jpg', year: '2024' },
@@ -127,10 +123,6 @@ export const pinturaWorks: Work[] = [
   { id: 'pint-009', title: 'Pintura 0477', category: 'pintura', image: '/Obras/Pintura/FOTOS QUADROS/IMG_0477.PNG', year: '2024' },
   { id: 'pint-010', title: 'Pintura 0479', category: 'pintura', image: '/Obras/Pintura/FOTOS QUADROS/IMG_0479.PNG', year: '2024' }
 ];
-
-// ============================================
-// EXPOSIÇÕES
-// ============================================
 export const exposicoesWorks: Work[] = [
   { id: 'exp-001', title: 'Agentes da Arte 01', category: 'exposicoes', image: '/Obras/Exposição/AGENTES DA ARTE/34B6FEFE-905D-443E-80EA-82C766E20FDD.JPG', year: '2024' },
   { id: 'exp-002', title: 'Agentes da Arte 02', category: 'exposicoes', image: '/Obras/Exposição/AGENTES DA ARTE/3B7282F6-6387-494C-86E4-A38CA7FED6C4.JPG', year: '2024' },
@@ -144,10 +136,6 @@ export const exposicoesWorks: Work[] = [
   { id: 'exp-010', title: 'Podpah 06', category: 'exposicoes', image: '/Obras/Exposição/PODPAH/DSC09933.JPEG', year: '2024' },
   { id: 'exp-011', title: 'Podpah 07', category: 'exposicoes', image: '/Obras/Exposição/PODPAH/DSC09964.JPEG', year: '2024' }
 ];
-
-// ============================================
-// VÍDEOS DO VIMEO
-// ============================================
 export const vimeoVideos = [
   { id: "1194787179", title: "Registro em Vídeo 1" },
   { id: "1194787180", title: "Registro em Vídeo 2" },
@@ -157,10 +145,6 @@ export const vimeoVideos = [
   { id: "1194787252", title: "Registro em Vídeo 6" },
   { id: "1194787177", title: "Registro em Vídeo 7" },
 ];
-
-// ============================================
-// EXPORTAÇÃO CONSOLIDADA
-// ============================================
 export const allWorks: Work[] = [
   ...carranqueiraWorks,
   ...encruzilhadaWorks,
@@ -171,7 +155,6 @@ export const allWorks: Work[] = [
   ...exposicoesWorks,
 ];
 
-// Agrupar obras por categoria
 export const worksByCategory = {
   carranqueira: carranqueiraWorks,
   encruzilhada: encruzilhadaWorks,
@@ -182,7 +165,6 @@ export const worksByCategory = {
   pintura: pinturaWorks,
 };
 
-// Nomes das séries para i18n
 export const seriesNames = {
   pt: {
     carranqueira: 'Carranqueira',

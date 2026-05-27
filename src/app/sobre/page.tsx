@@ -3,6 +3,7 @@
 import { useRef, useEffect, useState } from 'react';
 import gsap from 'gsap';
 import CurriculoButton from '@/components/ui/CurriculoButton';
+import CurriculoPortifolio from '@/components/ui/PortfolioButton';
 import { useLanguage } from '@/lib/LanguageContext';
 
 export default function SobrePage() {
@@ -90,7 +91,10 @@ export default function SobrePage() {
             <div className="gsap-reveal w-full max-w-md pt-8 border-t border-fundo-principal/10">
               <CurriculoButton />
             </div>
-
+{/* Botão do Portifolio */}
+            <div className="gsap-reveal w-full max-w-md pt-8 border-t border-fundo-principal/10">
+              <CurriculoPortifolio />
+            </div>
           </div>
           
         </div>
