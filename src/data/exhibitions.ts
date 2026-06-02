@@ -10,19 +10,6 @@ export interface Exhibition {
 }
 
 export const exhibitions: Exhibition[] = [
-  // ==========================================
-  // EXPOSIÇÕES INDIVIDUAIS
-  // ==========================================
-  {
-    id: 'ind-1',
-    year: '2017',
-    name: 'Sem título',
-    nameEn: 'Untitled',
-    type: 'individual',
-    location: 'High Design Home & Office Expo',
-    locationEn: 'High Design Home & Office Expo',
-    city: 'São Paulo, Brasil',
-  },
   {
     id: 'ind-2',
     year: '2017',

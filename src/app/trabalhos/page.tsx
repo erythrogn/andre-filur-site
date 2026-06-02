@@ -33,6 +33,7 @@ function WorkCard({ work }: { work: Work }) {
         <Image
           src={work.image}
           alt={work.title}
+          title="" // Propriedade adicionada para bloquear a exibição do nome ao passar o mouse
           fill
           className="object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
