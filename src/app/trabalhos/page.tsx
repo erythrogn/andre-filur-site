@@ -33,7 +33,7 @@ function WorkCard({ work }: { work: Work }) {
         <Image
           src={work.image}
           alt={work.title}
-          title="" // Propriedade adicionada para bloquear a exibição do nome ao passar o mouse
+          title="" 
           fill
           className="object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -41,9 +41,7 @@ function WorkCard({ work }: { work: Work }) {
       </div>
       
       <div className="absolute inset-0 bg-gradient-to-t from-fundo-principal via-fundo-principal/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6">
-        <h3 className="font-cormorant text-2xl italic text-creme mb-2">
-          {work.title}
-        </h3>
+        {/* O <h3> com o nome da obra foi removido daqui */}
         <p className="font-dm-mono text-[10px] uppercase text-ocre tracking-widest">
           {t(categoryKey)}
         </p>
