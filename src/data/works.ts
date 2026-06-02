@@ -70,7 +70,6 @@ export const encruzilhadaWorks: Work[] = [
   { id: 'enc-002', title: 'Andre Filúr – Encruzilhada 02', category: 'encruzilhada', image: '/Obras/Séries/ENCRUZILHADA/FOTOS/Andre Filúr_Encruzilhada_02.jpg', year: '2024' },
   { id: 'enc-003', title: 'Andre Filúr – Encruzilhada 03', category: 'encruzilhada', image: '/Obras/Séries/ENCRUZILHADA/FOTOS/Andre Filúr_Encruzilhada_03.jpg', year: '2024' },
   { id: 'enc-004', title: 'Andre Filúr – Encruzilhada 04', category: 'encruzilhada', image: '/Obras/Séries/ENCRUZILHADA/FOTOS/Andre Filúr_Encruzilhada_04.PNG', year: '2024' },
-  { id: 'enc-005', title: 'IMG 0671', category: 'encruzilhada', image: '/Obras/Séries/ENCRUZILHADA/FOTOS/IMG_0671.jpg', year: '2024' }
 ];
 
 // ============================================
@@ -88,13 +87,8 @@ export const oriWorks: Work[] = [
   { id: 'ori-009', title: 'Andre Filúr – Ori 08', category: 'ori', image: '/Obras/Séries/ORI/Andre Filúr_Ori_08.jpg', year: '2024' },
   { id: 'ori-010', title: 'Andre Filúr – Ori 09', category: 'ori', image: '/Obras/Séries/ORI/Andre Filúr_Ori_09.jpg', year: '2024' },
   { id: 'ori-011', title: 'Andre Filúr – Ori 10', category: 'ori', image: '/Obras/Séries/ORI/Andre Filúr_Ori_10.jpg', year: '2024' },
-  { id: 'ori-012', title: 'Andre Filúr – Ori 11', category: 'ori', image: '/Obras/Séries/ORI/Andre Filúr_Ori_11.jpg', year: '2024' },
   { id: 'ori-013', title: 'Andre Filúr – Quartinha do capital', category: 'ori', image: '/Obras/Séries/ORI/Andre Filúr_Quartinha do capital.jpg', year: '2024' }
 ];
-
-// ============================================
-// GRAVURA
-// ============================================
 export const gravuraWorks: Work[] = [
   { id: 'grav-001', title: 'Print 01', category: 'gravura', image: '/Obras/Gravura/Andre Filúr_Print_01.jpg', year: '2024' },
   { id: 'grav-002', title: 'Print 02', category: 'gravura', image: '/Obras/Gravura/Andre Filúr_Print_02.jpg', year: '2024' },
@@ -102,10 +96,6 @@ export const gravuraWorks: Work[] = [
   { id: 'grav-004', title: 'Print 04', category: 'gravura', image: '/Obras/Gravura/Andre Filúr_Print_04.jpg', year: '2024' },
   { id: 'grav-005', title: 'Print 05', category: 'gravura', image: '/Obras/Gravura/Andre Filúr_Print_05.jpg', year: '2024' }
 ];
-
-// ============================================
-// MURAL
-// ============================================
 export const muralWorks: Work[] = [
   { id: 'mur-001', title: 'Mural 01', category: 'mural', image: '/Obras/Mural/Andre Filúr_Mural_01.jpg', year: '2024' },
   { id: 'mur-002', title: 'Mural 02', category: 'mural', image: '/Obras/Mural/Andre Filúr_Mural_02.jpg', year: '2024' },
@@ -124,7 +114,6 @@ export const pinturaWorks: Work[] = [
   { id: 'pint-010', title: 'Pintura 0479', category: 'pintura', image: '/Obras/Pintura/FOTOS QUADROS/IMG_0479.PNG', year: '2024' }
 ];
 export const exposicoesWorks: Work[] = [
-  { id: 'exp-001', title: 'Agentes da Arte 01', category: 'exposicoes', image: '/Obras/Exposição/AGENTES DA ARTE/34B6FEFE-905D-443E-80EA-82C766E20FDD.JPG', year: '2024' },
   { id: 'exp-002', title: 'Agentes da Arte 02', category: 'exposicoes', image: '/Obras/Exposição/AGENTES DA ARTE/3B7282F6-6387-494C-86E4-A38CA7FED6C4.JPG', year: '2024' },
   { id: 'exp-003', title: 'Agentes da Arte 03', category: 'exposicoes', image: '/Obras/Exposição/AGENTES DA ARTE/a7159946-e046-4e55-bfb1-f3a9c7186b0e.JPG', year: '2024' },
   { id: 'exp-004', title: 'Agentes da Arte 04', category: 'exposicoes', image: '/Obras/Exposição/AGENTES DA ARTE/c829e381-95de-4586-b7cb-aca5c3298f32.JPG', year: '2024' },
