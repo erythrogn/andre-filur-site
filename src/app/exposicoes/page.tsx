@@ -12,21 +12,28 @@ export default function ExposicoesPage() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.fromTo('.gsap-reveal', 
+      // 1. Animação base: Título e Vídeo surgem suavemente
+      gsap.fromTo('.fade-in', 
         { opacity: 0, y: 30 }, 
-        { opacity: 1, y: 0, duration: 1, stagger: 0.1, ease: 'power3.out' }
+        { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }
       )
-    }, containerRef) // Restringe o escopo do GSAP apenas a esta página
+
+      // 2. Animação da fila (stagger) exclusiva e controlada para a lista
+      gsap.fromTo('.expo-item', 
+        { opacity: 0, x: -20 }, // Um leve movimento lateral reforça a sensação de lista
+        { opacity: 1, x: 0, duration: 0.8, stagger: 0.12, ease: 'power2.out', delay: 0.2 }
+      )
+    }, containerRef)
     
     return () => ctx.revert()
   }, [])
 
   return (
-    <main ref={containerRef} className="min-h-screen pt-32 pb-20 bg-creme text-fundo-principal">
+    <main ref={containerRef} className="min-h-screen pt-32 pb-20 bg-creme text-fundo-principal overflow-x-hidden">
       <div className="container-custom px-4">
         
-        {/* Adicionado opacity-0 para evitar o piscar inicial */}
-        <h1 className="heading-1 mb-16 text-center gsap-reveal opacity-0">
+        {/* Título isolado da fila */}
+        <h1 className="heading-1 mb-16 text-center fade-in opacity-0">
           {t('nav.exhibitions')}
         </h1>
         
@@ -40,8 +47,8 @@ export default function ExposicoesPage() {
               const tipoTexto = expo.type === 'individual' ? t('exhibitions.individual') : t('exhibitions.collective');
 
               return (
-                // Adicionado opacity-0 na div de cada exposição
-                <div key={expo.id} className="gsap-reveal opacity-0 border-b border-fundo-principal/10 pb-8">
+                // Classe exclusiva expo-item para a fila funcionar sem erros
+                <div key={expo.id} className="expo-item opacity-0 border-b border-fundo-principal/10 pb-8">
                   <h2 className="heading-3 mb-2">{titulo}</h2>
                   
                   <p className="label-text mt-2 opacity-70 font-medium">
@@ -63,8 +70,8 @@ export default function ExposicoesPage() {
           </div>
           
           <div className="lg:col-span-5 relative">
-            {/* Adicionado opacity-0 no contêiner do vídeo */}
-            <div className="lg:sticky lg:top-40 gsap-reveal opacity-0">
+            {/* Vídeo isolado da fila */}
+            <div className="lg:sticky lg:top-40 fade-in opacity-0">
               <EspacoArteVideo />
             </div>
           </div>
