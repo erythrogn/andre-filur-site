@@ -12,15 +12,13 @@ export default function ExposicoesPage() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // 1. Animação base: Título e Vídeo surgem suavemente
       gsap.fromTo('.fade-in', 
         { opacity: 0, y: 30 }, 
         { opacity: 1, y: 0, duration: 1, ease: 'power3.out' }
       )
 
-      // 2. Animação da fila (stagger) exclusiva e controlada para a lista
       gsap.fromTo('.expo-item', 
-        { opacity: 0, x: -20 }, // Um leve movimento lateral reforça a sensação de lista
+        { opacity: 0, x: -20 },
         { opacity: 1, x: 0, duration: 0.8, stagger: 0.12, ease: 'power2.out', delay: 0.2 }
       )
     }, containerRef)
@@ -29,10 +27,10 @@ export default function ExposicoesPage() {
   }, [])
 
   return (
-    <main ref={containerRef} className="min-h-screen pt-32 pb-20 bg-creme text-fundo-principal overflow-x-hidden">
+    // Removido o overflow-x-hidden para devolver a vida ao sticky
+    <main ref={containerRef} className="min-h-screen pt-32 pb-20 bg-creme text-fundo-principal">
       <div className="container-custom px-4">
         
-        {/* Título isolado da fila */}
         <h1 className="heading-1 mb-16 text-center fade-in opacity-0">
           {t('nav.exhibitions')}
         </h1>
@@ -47,7 +45,6 @@ export default function ExposicoesPage() {
               const tipoTexto = expo.type === 'individual' ? t('exhibitions.individual') : t('exhibitions.collective');
 
               return (
-                // Classe exclusiva expo-item para a fila funcionar sem erros
                 <div key={expo.id} className="expo-item opacity-0 border-b border-fundo-principal/10 pb-8">
                   <h2 className="heading-3 mb-2">{titulo}</h2>
                   
@@ -69,9 +66,9 @@ export default function ExposicoesPage() {
             )}
           </div>
           
-          <div className="lg:col-span-5 relative">
-            {/* Vídeo isolado da fila */}
-            <div className="lg:sticky lg:top-40 fade-in opacity-0">
+          {/* Adicionado h-full no pai e h-fit no filho para ancoragem perfeita do sticky */}
+          <div className="lg:col-span-5 h-full">
+            <div className="lg:sticky lg:top-40 h-fit fade-in opacity-0">
               <EspacoArteVideo />
             </div>
           </div>
