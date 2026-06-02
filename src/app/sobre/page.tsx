@@ -40,9 +40,6 @@ export default function SobrePage() {
             </div>
           </div>
 
-          {/* ========================================== */}
-          {/* COLUNA DIREITA - Vídeo e Ações             */}
-          {/* ========================================== */}
           <div className="relative flex flex-col items-center md:items-end mt-10 md:mt-0">
             
             <div className="relative w-full max-w-md mb-10 gsap-reveal">

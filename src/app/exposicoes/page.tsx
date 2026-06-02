@@ -4,63 +4,70 @@ import { useEffect } from 'react'
 import gsap from 'gsap'
 import { useLanguage } from '@/lib/LanguageContext'
 import EspacoArteVideo from '@/components/ui/EspacoArteVideo'
-import { exhibitions } from '@/data/exhibitions'
+import { exhibitions, type Exhibition } from '@/data/exhibitions'
 
 export default function ExposicoesPage() {
-  const { language } = useLanguage()
+  const { language, t } = useLanguage()
 
   useEffect(() => {
-    gsap.fromTo('.gsap-reveal', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1, stagger: 0.1 })
+    const ctx = gsap.context(() => {
+      gsap.fromTo('.gsap-reveal', 
+        { opacity: 0, y: 30 }, 
+        { opacity: 1, y: 0, duration: 1, stagger: 0.1, ease: 'power3.out' }
+      )
+    })
+    return () => ctx.revert()
   }, [])
-
-  const exposList = Array.isArray(exhibitions) ? exhibitions : Object.values(exhibitions || {});
 
   return (
     <main className="min-h-screen pt-32 pb-20 bg-creme text-fundo-principal">
       <div className="container-custom px-4">
-        <h1 className="heading-1 mb-16 text-center">{language === 'pt' ? 'Exposições' : 'Exhibitions'}</h1>
+        
+        {/* Título da Página Dinâmico */}
+        <h1 className="heading-1 mb-16 text-center gsap-reveal">
+          {t('nav.exhibitions')}
+        </h1>
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+          
+          {/* Coluna da Esquerda: Lista de Exposições */}
           <div className="lg:col-span-7 space-y-12">
-            {exposList.length > 0 ? exposList.map((expo: any, i: number) => {
+            {exhibitions.length > 0 ? exhibitions.map((expo: Exhibition) => {
               
-              const titulo = expo.titulo || expo.title || expo.name || expo.nome || '';
-              const dataStr = expo.data || expo.date || expo.ano || expo.year || '';
-              const localStr = expo.local || expo.location || expo.cidade || expo.city || '';
-              // Coleta de textos profundos do ficheiro
-              const descricao = expo.descricao || expo.description || expo.texto || expo.text || expo.conteudo || '';
+              // Lógica de tradução para os campos bilingues
+              const titulo = language === 'en' && expo.nameEn ? expo.nameEn : expo.name;
+              const local = language === 'en' && expo.locationEn ? expo.locationEn : expo.location;
+              const tipoTexto = expo.type === 'individual' ? t('exhibitions.individual') : t('exhibitions.collective');
 
               return (
-                <div key={i} className="gsap-reveal border-b border-fundo-principal/10 pb-8">
-                  <h2 className="heading-2">{titulo}</h2>
+                <div key={expo.id} className="gsap-reveal border-b border-fundo-principal/10 pb-8">
+                  <h2 className="heading-3 mb-2">{titulo}</h2>
                   
                   <p className="label-text mt-2 opacity-70 font-medium">
-                    {dataStr} {localStr ? ` | ${localStr}` : ''}
+                    {expo.year} | {local}, {expo.city}
                   </p>
                   
-                  {descricao && (
-                    <p className="body-text mt-4 opacity-90 whitespace-pre-line leading-relaxed">
-                      {descricao}
-                    </p>
-                  )}
-                  
-                  {expo.tipo && (
-                    <div className="mt-4">
-                      <span className="inline-block text-[10px] font-mono uppercase tracking-widest border border-fundo-principal/30 px-3 py-1 opacity-60">
-                        {expo.tipo}
-                      </span>
-                    </div>
-                  )}
+                  <div className="mt-4">
+                    <span className="inline-block text-[10px] font-mono uppercase tracking-widest border border-fundo-principal/30 px-3 py-1 opacity-60">
+                      {tipoTexto}
+                    </span>
+                  </div>
                 </div>
               )
             }) : (
-              <p className="opacity-50 italic">Carregando exposições...</p>
+              <p className="opacity-50 font-dm-mono uppercase tracking-widest text-sm text-center py-10">
+                Carregando exposições...
+              </p>
             )}
           </div>
           
-          <div className="lg:col-span-5 lg:sticky lg:top-40">
-            <EspacoArteVideo />
+          {/* Coluna da Direita: Vídeo com Sticky Scroll */}
+          <div className="lg:col-span-5 relative">
+            <div className="lg:sticky lg:top-40 gsap-reveal">
+              <EspacoArteVideo />
+            </div>
           </div>
+
         </div>
       </div>
     </main>
