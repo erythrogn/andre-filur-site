@@ -1,10 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import gsap from 'gsap'
 import { useLanguage } from '@/lib/LanguageContext'
 
 export default function ContatoPage() {
   const { t } = useLanguage()
+  const containerRef = useRef<HTMLDivElement>(null)
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -12,13 +15,25 @@ export default function ContatoPage() {
   })
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
 
+  // Animação de entrada da página
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.fromTo('.gsap-reveal', 
+        { opacity: 0, y: 30 }, 
+        { opacity: 1, y: 0, duration: 1.2, stagger: 0.15, ease: 'power3.out' }
+      )
+    }, containerRef)
+    
+    return () => ctx.revert()
+  }, [])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setStatus('sending')
 
     try {
-      // Integração com FormSubmit ou similar
-      const response = await fetch('https://formsubmit.co/ajax/YOUR_EMAIL_HERE', {
+      // Apontando diretamente para a nossa Rota de API segura
+      const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -49,22 +64,23 @@ export default function ContatoPage() {
   }
 
   return (
-    <div className="min-h-screen pt-32 pb-20">
+    <div ref={containerRef} className="min-h-screen pt-32 pb-20">
       <div className="container-custom">
         <div className="grid md:grid-cols-2 gap-16 lg:gap-24">
+          
           {/* Coluna Esquerda - Texto de Abertura */}
           <div className="space-y-8">
-            <h1 className="heading-2">
+            <h1 className="heading-2 gsap-reveal opacity-0">
               {t('contact.title')}
             </h1>
             
-            <p className="font-cormorant text-lg md:text-xl text-areia leading-relaxed">
+            <p className="font-cormorant text-lg md:text-xl text-areia leading-relaxed gsap-reveal opacity-0">
               {t('contact.intro')}
             </p>
           </div>
 
           {/* Coluna Direita - Formulário */}
-          <div>
+          <div className="gsap-reveal opacity-0">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label htmlFor="name" className="label-text block mb-2">
@@ -121,17 +137,18 @@ export default function ContatoPage() {
 
               {/* Mensagens de status */}
               {status === 'success' && (
-                <p className="body-text text-ocre">
+                <p className="body-text text-ocre mt-4">
                   {t('contact.success')}
                 </p>
               )}
               {status === 'error' && (
-                <p className="body-text text-red-400">
+                <p className="body-text text-red-400 mt-4">
                   {t('contact.error')}
                 </p>
               )}
             </form>
           </div>
+          
         </div>
       </div>
     </div>
